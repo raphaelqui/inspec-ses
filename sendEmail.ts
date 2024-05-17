@@ -8,9 +8,7 @@ const SES_CONFIG = {
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     region: process.env.AWS_SES_REGION,
 };
-
 const AWS_SES = new AWS.SES(SES_CONFIG);
-
 export const sendEmail = async (recipientEmail: string, name: string, pin: string) => {
     /* Die Domain Übergabe, wenn die komplette Applikation fertig ist, soll
     doch bitte nahtlos verlaufen, also wenn ich Zugriff aufs Cedrics
@@ -81,29 +79,8 @@ export const sendEmail = async (recipientEmail: string, name: string, pin: strin
 
     ! In der Body-Eigenschaft geben sowohl eine HTML- und Text-Eigenschaft. Hat der Nutzer eine
     ! high-latency.
-
-
-
-
-
-
-
-
-    /
-
-
-
     
-
-
-    
-
-
-
-
-
-hier müssen wir den Pin entschlüsseln
-
+    hier müssen wir den Pin entschlüsseln
       */ 
 
     let params = {
