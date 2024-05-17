@@ -1,0 +1,33 @@
+{
+  "name": "inspec-ses",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@mui/material": "^5.15.16",
+    "add": "^2.0.6",
+    "aws-sdk": "^2.1613.0",
+    "crypto-js": "^4.2.0",
+    "dotenv": "^16.4.5",
+    "next": "14.2.3",
+    "react": "^18",
+    "react-dom": "^18",
+    "yarn": "^1.22.22"
+  },
+  "devDependencies": {
+    "@types/crypto-js": "^4.2.2",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.3",
+    "typescript": "^5"
+  }
+}
