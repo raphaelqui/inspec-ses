@@ -9,7 +9,7 @@ const SES_CONFIG = {
     region: process.env.AWS_SES_REGION,
 };
 const AWS_SES = new AWS.SES(SES_CONFIG);
-export const sendEmail = async (recipientEmail: string, name: string, pin: string) => {
+export const sendEmail = async (recipientEmail: string, name: string, pin: any) => {
     /* Die Domain Übergabe, wenn die komplette Applikation fertig ist, soll
     doch bitte nahtlos verlaufen, also wenn ich Zugriff aufs Cedrics
     Domain-Anbieter Strato und die CNAME-Einträge von AWS hinein einfügen kann,
@@ -19,10 +19,8 @@ export const sendEmail = async (recipientEmail: string, name: string, pin: strin
 
     https://music.youtube.com/watch?v=BAfNGQsLFKg -> from 31:10
 
-
     la prochaine choses:
     - einen Ordner nur für die Projekt Templates anfertigen
-
 
         - ein the9th-template anfertigen für die Pin Darstellung
 
@@ -108,13 +106,21 @@ export const sendEmail = async (recipientEmail: string, name: string, pin: strin
         }
     }
     try {
-        const res = await AWS_SES.sendEmail(params).promise();
+        const res = await AWS_SES.sendEmail(params).promise() as any;
         console.log('- - - - - - - - - - - - - - - - - - - - -');
         console.log('- - - - - - - - - - - - - - - - - - - - -');
         console.log('- - - - - - - -  resolved   - - - - - - -');
         console.log('- - - - - - - - - - - - - - - - - - - - -');
         console.log('- - - - - - - - - - - - - - - - - - - - -');
         console.log("Email has been sent!", res);
+        const body = await res.json();
+        return new Response(JSON.stringify({
+            service: {
+                body: body,
+                res: res,
+                from: "success"
+            },
+        }));
     } catch(error){
         console.log('- - - - - - - - - - - - - - - - - - - - -');
         console.log('- - - - - - - - - - - - - - - - - - - - -');
@@ -122,6 +128,10 @@ export const sendEmail = async (recipientEmail: string, name: string, pin: strin
         console.log('- - - - - - - - - - - - - - - - - - - - -');
         console.log('- - - - - - - - - - - - - - - - - - - - -');
         console.error(error);
+        return new Response(JSON.stringify({
+            service: error,
+            from: "failure"
+        }));
     }
 
 }
