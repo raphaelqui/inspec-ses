@@ -9,9 +9,9 @@ const SES_CONFIG = {
 const AWS_SES = new AWS.SES(SES_CONFIG);
 
 interface interface_template {
-    html: string,
-    subject: string,
     source: string
+    subject: string,
+    html: string,
 }
 
 export const sendEmail = async (recipientEmail: string[], template: interface_template ) => {

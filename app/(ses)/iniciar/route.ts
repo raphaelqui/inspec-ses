@@ -9,8 +9,10 @@ export async function POST (req: NextRequest){
     const reqBody = await req.json();
     const { template } = require("@/templates/"+reqBody.template+".js");
     // :::reqBody.email muss type string[] sein::: 
+
     const res = await sendEmail(typeof reqBody.email === "string" ? [reqBody.email] : reqBody.email, template(reqBody.content, reqBody.localization));
     return new Response(JSON.stringify({
+        raw: reqBody,
         templateObj: template(reqBody.content, reqBody.localization),
         recipient: reqBody.email
     }), {status: 200});
@@ -21,7 +23,7 @@ export async function POST (req: NextRequest){
         template: "the9th_pin_confirmation", 
         content: {                      
             name: "Raphael",
-            pin: "chiffriert",
+            pin: "chiffrietemplatert",
         }
         localization: "de"
     }
