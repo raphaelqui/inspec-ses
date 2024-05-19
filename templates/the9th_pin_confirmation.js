@@ -1,8 +1,10 @@
 
 import { decryptMsg } from '@/functions/helper';
-
- const template = ({name, pinChiffre})=>{
-    return `<!DOCTYPE html>
+ const template = (content, localization)=>{
+    let resObj = {}
+    resObj.source = "info@inspec-ses.com"; // später the9th.co etc.
+    resObj.subject = "Pin Bestätigung";
+    resObj.html =  `<!DOCTYPE html>
     <html lang="en" xmlns:v="urn:schemas-microsoft-com:vml">
     <head>
       <meta charset="utf-8">
@@ -71,7 +73,7 @@ import { decryptMsg } from '@/functions/helper';
                   <tr>
                     <td class="sm-px-6" style="border-radius: 4px; background-color: #fff; padding: 48px; font-size: 16px; color: #334155; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05)">
                       <h1 class="sm-leading-8" style="margin: 0 0 24px; font-size: 24px; font-weight: 600; color: #000">
-                        Hallo, ${name}
+                        Hallo, ${content.name}
                       </h1>
                       <p style="margin: 0; line-height: 24px">
                         Anbei schicken wir deinen Pin damit du dich authentifizieren kannst.
@@ -80,7 +82,7 @@ import { decryptMsg } from '@/functions/helper';
                       <table style="width: 100%; padding-bottom: 24px; padding-top: 40px" cellpadding="0" cellspacing="0" role="none">
                         <tr>
                           <td style="text-align: center;">
-                            <h1 style="margin: 0; color: #475569">${decryptMsg(pinChiffre, process.env.THE9TH_SYMMETRICAL_CRYPTKEY).split("").join(" ")}</h1>
+                            <h1 style="margin: 0; color: #475569">${decryptMsg(content.pinChiffre, process.env.THE9TH_SYMMETRICAL_CRYPTKEY).split("").join(" ")}</h1>
                           </td>
                         </tr>
                       </table>
@@ -125,6 +127,7 @@ import { decryptMsg } from '@/functions/helper';
       </div>
     </body>
     </html>`;
+    return resObj;
     }
 
     module.exports = {template};

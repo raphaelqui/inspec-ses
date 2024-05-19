@@ -1,7 +1,5 @@
-import {transactional} from '@/templates/transactional';
 import AWS from 'aws-sdk';
 require('dotenv').config();
-
 
 const SES_CONFIG = {
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -9,110 +7,42 @@ const SES_CONFIG = {
     region: process.env.AWS_SES_REGION,
 };
 const AWS_SES = new AWS.SES(SES_CONFIG);
-export const sendEmail = async (recipientEmail: string, name: string, pin: any) => {
-    /* Die Domain Übergabe, wenn die komplette Applikation fertig ist, soll
-    doch bitte nahtlos verlaufen, also wenn ich Zugriff aufs Cedrics
-    Domain-Anbieter Strato und die CNAME-Einträge von AWS hinein einfügen kann,
-    brauch ich den introspective-ses.org/sendAuth Mechanismus nicht nocheinmal 
-    umzuändern, sondern ich kann lediglich einfach Parameter übergeben 
-    welche den Email-Sende-Prozess genau definieren, wie dieser verlaufen soll.
 
-    https://music.youtube.com/watch?v=BAfNGQsLFKg -> from 31:10
+interface interface_template {
+    html: string,
+    subject: string,
+    source: string
+}
 
-    la prochaine choses:
-    - einen Ordner nur für die Projekt Templates anfertigen
+export const sendEmail = async (recipientEmail: string[], template: interface_template ) => {
 
-        - ein the9th-template anfertigen für die Pin Darstellung
-
-        - das Entwickeln des Html-Codes beginnt mit einem Email-Template-Code
-
-
-
-    - diesen Prozess durch den Dashboard-Button-Prozess testen.
-
-    - als nächstes werden wir versuchen 
-
-
-
-    - senden testen
-    - service auf vercel deployen 
-    - während der Authentifizierung mittels der introspective-ses app die Pin versenden
-    
-
-
-    - - -
-    PARAMETERS
-    - - -
-
-
-    ==== SOURCE ==== Master
-
-    Wenn ich also schon dabei bin den Absender genau zu definieren. Werde ich der
-    Absender-Definition einen ganzen größeren Parameter widmen:
-    
-    const source = {
-        compartment: "info"
-        subdomain: "" --> ist subdomain ein leerer String, gilt nur hauptdomain
-        //oder
-        subdomain: "auth" --> folgendes gilt: auth.mydomain.com
-        domain: "the9th.co" --> ja die TLD ist .co und steht für community, aber meint eigentlich colombia as counrty code 
-    }
-
-    ! für diese Angabe wird natürlich zuerst überprüft ob auch die domain von
-    ! AWS verifiziert wurde. 
-
-
-
-    ==== BODY ====
-
-    Zudem möchte ich HTML-Code als String mitgeben in welcher wir die Daten mitübergen, 
-    da ist jetzt direkt die.
-
-
-    const body = "<html>
-        <div style="style:value">
-            some text
-        </div>
-    </html>"
-
-    ! In der Body-Eigenschaft geben sowohl eine HTML- und Text-Eigenschaft. Hat der Nutzer eine
-    ! high-latency.
-    
-    hier müssen wir den Pin entschlüsseln
-      */ 
+    // so als nächstes muss ich schauen ob und wie ich alex retten kann 
+    // ich außerdem gibt auch das template-object an 
 
     let params = {
-        Source: "info@inspec-ses.com",
+        Source: template.source,
         Destination: {
-            ToAddresses: [
-                recipientEmail
-            ]
+            ToAddresses: recipientEmail
         },
         ReplyToAddresses: [],
         Message: {
             Body: {
                 Text: {
                     Charset: "UTF-8",
-                    Data: "Irgendein Titel"
+                    Data: ""
                 },
                 Html: {
-                    Data: transactional(name, pin)
+                    Data: template.html
                 },
             },
             Subject: {
                 Charset: "UTF-8",
-                Data: `Hello, ${name}`
+                Data: template.subject
             }
         }
     }
     try {
         const res = await AWS_SES.sendEmail(params).promise() as any;
-        console.log('- - - - - - - - - - - - - - - - - - - - -');
-        console.log('- - - - - - - - - - - - - - - - - - - - -');
-        console.log('- - - - - - - -  resolved   - - - - - - -');
-        console.log('- - - - - - - - - - - - - - - - - - - - -');
-        console.log('- - - - - - - - - - - - - - - - - - - - -');
-        console.log("Email has been sent!", res);
         const body = await res.json();
         return new Response(JSON.stringify({
             service: {
@@ -122,12 +52,6 @@ export const sendEmail = async (recipientEmail: string, name: string, pin: any) 
             },
         }));
     } catch(error){
-        console.log('- - - - - - - - - - - - - - - - - - - - -');
-        console.log('- - - - - - - - - - - - - - - - - - - - -');
-        console.log('- - - - - - - -   error   - - - - - - - -');
-        console.log('- - - - - - - - - - - - - - - - - - - - -');
-        console.log('- - - - - - - - - - - - - - - - - - - - -');
-        console.error(error);
         return new Response(JSON.stringify({
             service: error,
             from: "failure"
